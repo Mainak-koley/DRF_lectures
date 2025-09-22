@@ -25,3 +25,20 @@ def get_all_product(request):
         return Response(product.data)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['PATCH'])
+def update_product(request):
+    id = request.data.get('id')
+    
+    try:
+        product = ProductModel.objects.get(id=id)
+    except:
+        return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer_class = ProductSerializer(product, data=request.data, partial=True)
+    if serializer_class.is_valid():
+        serializer_class.save()
+        return Response(serializer_class.data)
+    else:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+ 
